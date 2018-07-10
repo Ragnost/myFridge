@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+
+    <ImageView
+        android:id="@+id/list_item_icon_ID"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
+        android:src="@mipmap/ic_launcher_round"/>
+
+    <!-- Zeile 1 -->
+    <LinearLayout
+        android:id="@+id/list_item_zeile1_ID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/list_item_icon_ID"
+        android:layout_toRightOf="@id/list_item_icon_ID"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+
+        <TextView
+            android:id="@+id/list_item_name_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Name"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/list_item_ablaufdatum_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ablaufdatum"
+            android:textColor="@color/colorAccent" />
+    </LinearLayout>
+
+
+    <!-- Zeile 2 -->
+    <LinearLayout
+        android:id="@+id/list_item_zeile2_ID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_zeile1_ID"
+        android:layout_toEndOf="@id/list_item_icon_ID"
+        android:layout_toRightOf="@id/list_item_icon_ID"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+
+        <TextView
+            android:id="@+id/list_item_stueckzahl_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stückzahl"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/list_item_null_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/colorAccent" />
+    </LinearLayout>
+
+
+</RelativeLayout>
