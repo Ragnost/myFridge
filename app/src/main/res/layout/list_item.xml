@@ -11,7 +11,7 @@
         android:layout_height="40dp"
         android:paddingEnd="20dp"
         android:paddingRight="20dp"
-        android:src="@mipmap/ic_launcher_round"/>
+        android:src="@mipmap/ic_launcher_round" />
 
     <!-- Zeile 1 -->
     <LinearLayout
@@ -27,18 +27,24 @@
         <TextView
             android:id="@+id/list_item_name_id"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Name"
             android:textColor="@color/colorPrimary" />
+
 
         <TextView
             android:id="@+id/list_item_ablaufdatum_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Ablaufdatum"
-            android:textColor="@color/colorAccent" />
+            android:text=""
+            android:layout_marginEnd="10dp"
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorPrimary" />
+
+
     </LinearLayout>
 
 
@@ -63,12 +69,14 @@
             android:textColor="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/list_item_null_id"
+            android:id="@+id/list_item_countdown_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="10dp"
             android:text=""
-            android:textColor="@color/colorAccent" />
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
 

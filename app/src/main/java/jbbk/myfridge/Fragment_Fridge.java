@@ -1,13 +1,37 @@
 package jbbk.myfridge;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ParseException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 public class Fragment_Fridge extends Fragment {
@@ -17,7 +41,13 @@ public class Fragment_Fridge extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private FloatingActionButton addButton;
+    private Date today = new Date();
     private View list_overview;
+    private Integer icons[];
+    private static final SimpleDateFormat dateFormat
+            = new SimpleDateFormat("dd.MM.yyyy");
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -28,15 +58,6 @@ public class Fragment_Fridge extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Fridge.
-     */
-    // TODO: Rename and change types and number of parameters
     public static Fragment_Fridge newInstance(String param1, String param2) {
         Fragment_Fridge fragment = new Fragment_Fridge();
         Bundle args = new Bundle();
@@ -49,35 +70,88 @@ public class Fragment_Fridge extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
+
+
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+    /*Beispiel-Datensatze*/
+    String[] name = {
+            "Kürbis",
+            "Tomate",
+            "Kartoffel"
+    };
+    String[] ablaufdatumString = {
+            "01.09.2018",
+            "16.07.2018",
+            "16.07.2019"};
+    String[] stueckzahl = {"2", "3", "500"};
+    String[] countdown = new String[stueckzahl.length];
+    /* ------------------*/
+
+    private Context mContext;
+    private Activity mActivity;
+
+    private RelativeLayout mRelativeLayout;
+
+
+    private PopupWindow mPopupWindow;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
+        System.out.println("onCreateView");
         list_overview = inflater.inflate(R.layout.list_overview, container, false);
-        String[] name = {
-                "Kürbis",
-                "Tomate"
-        };
+        addButton = list_overview.findViewById(R.id.addButton);
+        mRelativeLayout = list_overview.findViewById(R.id.test);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(inflater.inflate(R.layout.fragment_add_item, null)).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
 
-        String[] ablaufdatum = {"11.05.1996", "31.12.2099"};
+                builder.show();
+            }
+        });
 
-        String[] stueckzahl = {"2", "3"};
 
-        ListAdapter listAdapterClass = new ListAdapter(this.getActivity(), name, stueckzahl, ablaufdatum);
+        try
 
+        {
+            System.out.println("Datum2: " + dateFormat.format(dateFormat.parse(ablaufdatumString[0])));
+            for (int i = 0; i < ablaufdatumString.length; i++) {
+                long unterschied = dateFormat.parse(ablaufdatumString[i]).getTime() - today.getTime();
+                countdown[i] = String.valueOf(TimeUnit.DAYS.convert(unterschied, TimeUnit.MILLISECONDS));
+            }
+
+        } catch (
+                java.text.ParseException e)
+
+        {
+            e.printStackTrace();
+        }
+
+        /*
+        for (int i = 0; i < icons.length; i++) {
+            if (name[i].equals("ü")) {
+                name[i] = "ue";
+            }
+            icons[i] = this.getResources().getIdentifier(name[i].toLowerCase() + ".jpg", "drawable", this.getContext().getPackageName());
+        }
+        */
+
+        ListAdapter listAdapterClass = new ListAdapter(this.getActivity(), name, stueckzahl, ablaufdatumString, icons, countdown);
         ListView myListView = list_overview.findViewById(R.id.listoverview_id);
-
         myListView.setAdapter(listAdapterClass);
-
-        System.out.println("\n\n Debug:" + listAdapterClass + "\n\n");
-
         return list_overview;
     }
 
