@@ -2,36 +2,26 @@ package jbbk.myfridge;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.ParseException;
-import android.net.Uri;
-import android.os.Build;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 public class Fragment_Fridge extends Fragment {
@@ -73,7 +63,6 @@ public class Fragment_Fridge extends Fragment {
         mContext = getActivity().getApplicationContext();
 
 
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -98,7 +87,7 @@ public class Fragment_Fridge extends Fragment {
     private Activity mActivity;
 
     private RelativeLayout mRelativeLayout;
-
+    private EditText mEdit;
 
     private PopupWindow mPopupWindow;
 
@@ -109,17 +98,39 @@ public class Fragment_Fridge extends Fragment {
         list_overview = inflater.inflate(R.layout.list_overview, container, false);
         addButton = list_overview.findViewById(R.id.addButton);
         mRelativeLayout = list_overview.findViewById(R.id.test);
+
+
+
+
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setView(inflater.inflate(R.layout.fragment_add_item, null)).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
+                AlertDialog builder = new AlertDialog.Builder(getActivity(), R.style.MyAlertDialogStyle).create();
+                LayoutInflater inflaterR = getActivity().getLayoutInflater();
+                final View dialogView = inflaterR.inflate(R.layout.fragment_add_item, null);
+                builder.setView(dialogView);
+
+                FloatingActionButton addLebensmittel = dialogView.findViewById(R.id.addLebensmittel);
+
+                addLebensmittel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("button wurde gedrückt");
+                        mEdit   = dialogView.findViewById(R.id.addNameID);
+                        System.out.println("Ausgabe: " + mEdit.getText());
                     }
                 });
 
+                builder.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                 builder.show();
+
+
             }
         });
 
