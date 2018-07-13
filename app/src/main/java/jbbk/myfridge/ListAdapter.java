@@ -49,7 +49,7 @@ public class ListAdapter extends ArrayAdapter<String> {
         TextView ablaufdatumView = listView.findViewById(R.id.list_item_ablaufdatum_id);
         TextView stueckzahlView = listView.findViewById(R.id.list_item_stueckzahl_id);
         TextView countdownView = listView.findViewById(R.id.list_item_countdown_id);
-        ImageView iconView = listView.findViewById(R.id.list_item_icon_ID);
+        //ImageView iconView = listView.findViewById(R.id.list_item_icon_ID);
 
 
         nameView.setText(name[position]);
