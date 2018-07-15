@@ -51,6 +51,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="82dp"
+        android:maxLength="10"
         android:ems="10"
         android:hint="Name"
         android:inputType="textPersonName" />
@@ -63,6 +64,7 @@
         android:layout_below="@+id/addNameID"
         android:layout_centerHorizontal="true"
         android:ems="10"
+        android:maxLength="10"
         android:hint="Stückzahl"
         android:inputType="phone" />
 

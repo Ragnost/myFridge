@@ -7,7 +7,7 @@ public class DatabaseHelper {
 
     public String DATABASE_NAME;
 
-    public int ID;
+
     public String name;
     public String ablaufdatum;
     public String stueckzahl;
@@ -16,22 +16,19 @@ public class DatabaseHelper {
     public DatabaseHelper(){
 
     }
-    public DatabaseHelper( int ID, String name, String ablaufdatum, String stueckzahl){
-        this.ID = ID;
+    public DatabaseHelper(String name, String ablaufdatum, String stueckzahl){
         this.name = name;
         this.ablaufdatum = ablaufdatum;
         this.stueckzahl = stueckzahl;
         this.image = image;
+
+
+
+
     }
 
 
-    public int getID() {
-        return ID;
-    }
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public String getName() {
         return name;
