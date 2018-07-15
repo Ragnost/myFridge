@@ -2,6 +2,8 @@ package jbbk.myfridge;
 
 import android.graphics.drawable.Icon;
 
+import java.util.ArrayList;
+
 //shoppingmemo
 public class DatabaseHelper {
 
@@ -13,21 +15,15 @@ public class DatabaseHelper {
     public String stueckzahl;
     public Icon image;
 
-    public DatabaseHelper(){
+    public DatabaseHelper() {
 
     }
-    public DatabaseHelper(String name, String ablaufdatum, String stueckzahl){
+
+    public DatabaseHelper(String name, String ablaufdatum, String stueckzahl) {
         this.name = name;
         this.ablaufdatum = ablaufdatum;
         this.stueckzahl = stueckzahl;
-        this.image = image;
-
-
-
-
     }
-
-
 
 
     public String getName() {
@@ -64,7 +60,10 @@ public class DatabaseHelper {
 
     @Override
     public String toString() {
-         String output = name;
+        String output = name;
         return output;
     }
+
+
+
 }

@@ -66,14 +66,23 @@ public class ListAdapter extends ArrayAdapter<DatabaseHelper> {
         long unterschied = 0;
         try {
             unterschied = dateFormat.parse(model.getAblaufdatum()).getTime() - today.getTime();
+            unterschied = unterschied + 1;
         } catch (ParseException e) {
             e.printStackTrace();
         }
         String countdown = String.valueOf(TimeUnit.DAYS.convert(unterschied, TimeUnit.MILLISECONDS));
 
+        String days = " Tage";
+        if (countdown.equals("1") || countdown.equals(1)) {
+            days = " Tag";
 
+        }
+        if (countdown.equals("0") || countdown.equals(0)) {
+            countdownView.setText("ABGELAUFEN");
+        } else {
+            countdownView.setText(countdown + days);
+        }
 
-        countdownView.setText(countdown + " Tage");
 
         String fileName = replaceUmlaute(model.getName().toLowerCase());
 

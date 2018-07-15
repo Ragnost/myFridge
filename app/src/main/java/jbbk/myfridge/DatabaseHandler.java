@@ -14,10 +14,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "myFridge.db";  // Database Name
     public static final int DATABASE_VERSION = 4;
-    private int primaryKeyID = 0;
     public static final String TABLE_FOOD_LIST = "food_list";
-
-
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ABLAUFDATUM = "ablaufdatum";
     public static final String COLUMN_STUECKZAHL = "stueckzahl";
@@ -30,10 +27,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     COLUMN_STUECKZAHL + " TEXT NOT NULL, " +
                     COLUMN_IMAGE + " TEXT );";
 
-    DatabaseHelper dbHelper = new DatabaseHelper();
-
     private static final String LOG_TAG = DatabaseHandler.class.getSimpleName();
-    SQLiteDatabase mSqLiteDatabase;
+    private DatabaseHelper dbHelper = new DatabaseHelper();
+    private SQLiteDatabase mSqLiteDatabase;
+    private ArrayList<String> name = new ArrayList<>();
+    private ArrayList<String> stueckzahl = new ArrayList<>();
+    private ArrayList<String> ablaufdatum = new ArrayList<>();
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,10 +59,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void deleteItem(String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + name, null);
-        db.close();
+    public void deleteRow(String name) {
+        mSqLiteDatabase = this.getWritableDatabase();
+        mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name +"\";" , null);
+        mSqLiteDatabase.close();
     }
 
     public void insertFood(String name, String count, String datum) {
@@ -72,21 +72,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COLUMN_NAME, name);
         values.put(COLUMN_STUECKZAHL, count);
         values.put(COLUMN_ABLAUFDATUM, datum);
-        primaryKeyID++;
         System.out.println("Datenbank: " + mSqLiteDatabase.insert(TABLE_FOOD_LIST, null, values));
-        //mSqLiteDatabase.insert(TABLE_FOOD_LIST, null, values);
         mSqLiteDatabase.close();
     }
-
-    public void clearDatabase(){
-        mSqLiteDatabase.execSQL("delete from "+ TABLE_FOOD_LIST);
-    }
-
-    ArrayList<String> name = new ArrayList<>();
-    ArrayList<String> stueckzahl = new ArrayList<>();
-    ArrayList<String> ablaufdatum = new ArrayList<>();
-
-    DatabaseHelper saves;
 
     public int getProfilesCount() {
         String countQuery = "SELECT  * FROM " + TABLE_FOOD_LIST;
@@ -99,13 +87,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public void getFoodFromDB() {
-
         mSqLiteDatabase = this.getReadableDatabase();
         String selectAll = "select * from " + TABLE_FOOD_LIST;
         Cursor c = mSqLiteDatabase.rawQuery(selectAll, null);
         if (c.moveToFirst()) {
             do {
-
                 /* To Object */
                 dbHelper.setName(c.getString(0));
                 dbHelper.setStueckzahl(c.getString(1));
@@ -116,25 +102,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 System.out.println(dbHelper.getAblaufdatum());
                 System.out.println(dbHelper.getStueckzahl());
 
+                name.add(c.getString(0));
+                stueckzahl.add(c.getString(2));
+                ablaufdatum.add(c.getString(1));
 
-                String _name = c.getString(0);
-                String _stueckzahl = c.getString(1);
-                String _ablaufdatum = c.getString(2);
-
-
-
-                name.add(_name);
-                // schnell vertauscht
-                stueckzahl.add(_ablaufdatum);
-                ablaufdatum.add(_stueckzahl);
             } while (c.moveToNext());
         }
         mSqLiteDatabase.close();
     }
 
-    public DatabaseHelper getSaves() {
-        return saves;
-    }
 
     public ArrayList<String> getStueckzahl() {
         return stueckzahl;

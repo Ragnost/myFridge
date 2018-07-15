@@ -51,6 +51,15 @@ public class Fragment_Fridge extends Fragment {
             = new SimpleDateFormat("dd.MM.yyyy");
     private ArrayList<DatabaseHelper> dbFood;
 
+    private Context mContext;
+    private FloatingActionButton addLebensmittel;
+    private RelativeLayout mRelativeLayout;
+    private EditText nameInput, countInput;
+    private DatePicker simpleDatePicker;
+    private ListAdapter listAdapterClass;
+    private String nameWatcher, ablaufDatumWatcherString, countWatcher;
+    private ListView myListView;
+    private DatabaseHandler dbHandler;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -70,7 +79,6 @@ public class Fragment_Fridge extends Fragment {
         return fragment;
     }
 
-    DatabaseHandler dbHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,59 +97,22 @@ public class Fragment_Fridge extends Fragment {
         }
     }
 
-    /* ------------------*/
-    private String countFromXML;
-    private String nameFromXML;
-    private String dateFromXML;
-    private Context mContext;
-    private Activity mActivity;
-    private FloatingActionButton addLebensmittel;
-    private RelativeLayout mRelativeLayout;
-    private EditText nameInput, countInput;
-    private DatePicker simpleDatePicker, ablaufDatumWatcher;
-    private ListAdapter listAdapterClass;
-    private PopupWindow mPopupWindow;
-    private String nameWatcher, ablaufDatumWatcherString;
-    private String countWatcher;
-    private ListView myListView;
-
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        System.out.println("onCreateView");
         list_overview = inflater.inflate(R.layout.list_overview, container, false);
         addButton = list_overview.findViewById(R.id.addButton);
         mRelativeLayout = list_overview.findViewById(R.id.test);
 
-        String[] _name = new String[dbHandler.getName().size()];
-        _name = dbHandler.getName().toArray(_name);
-        String[] _stueckzahl = new String[dbHandler.getStueckzahl().size()];
-        _stueckzahl = dbHandler.getStueckzahl().toArray(_stueckzahl);
-        String[] _ablaufdatum = new String[dbHandler.getAblaufdatum().size()];
-        _ablaufdatum = dbHandler.getAblaufdatum().toArray(_ablaufdatum);
-
-        /**
-         * Datum durch Input ist String
-         * Datum vom System wird als Date-Objekt abgespeichert
-         * dateFormat = new SimpleDateFormat("dd.MM.yyyy")
-         */
-
-
-        System.out.println("Eintraege; " + dbHandler.getProfilesCount());
         dbFood = new ArrayList<>();
         for (int i = 0; i < dbHandler.getProfilesCount(); i++) {
-            dbFood.add(new DatabaseHelper(_name[i], _ablaufdatum[i], _stueckzahl[i]));
+            dbFood.add(new DatabaseHelper(dbHandler.getName().get(i), dbHandler.getAblaufdatum().get(i), dbHandler.getStueckzahl().get(i)));
         }
 
 
         listAdapterClass = new ListAdapter(this.getActivity(), dbFood);
-
-
-        //listAdapterClass = new ListAdapter(this.getActivity(), _name, _stueckzahl, countdown);
-        // ListAdapter listAdapterClass = new ListAdapter(this.getActivity(), name, stueckzahl, ablaufdatumString, icons, countdown);
         myListView = list_overview.findViewById(R.id.listoverview_id);
         myListView.setAdapter(listAdapterClass);
 
@@ -157,44 +128,19 @@ public class Fragment_Fridge extends Fragment {
 
                 addLebensmittel = dialogView.findViewById(R.id.addLebensmittel);
                 nameInput = dialogView.findViewById(R.id.addNameID);
-                simpleDatePicker = dialogView.findViewById(R.id.simpleDatePicker); // initiate a date picker
+                simpleDatePicker = dialogView.findViewById(R.id.simpleDatePicker);
                 countInput = dialogView.findViewById(R.id.addCountLebensmittel);
 
                 nameInput.addTextChangedListener(watcher);
                 countInput.addTextChangedListener(watcher);
-                /*simpleDatePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
-                    @Override
-                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                        ablaufDatumWatcher = datePicker;
-                    }
-                });
-*/
-                addLebensmittel.setEnabled(false);
-                addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
-                addLebensmittel.setAlpha(0.33f);
+
+
                 addLebensmittel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-
-                        int day = simpleDatePicker.getDayOfMonth();
-                        int month = simpleDatePicker.getMonth() + 1;
-                        int year = simpleDatePicker.getYear();
-
-                        String dayString = String.valueOf(day);
-                        String monthString = String.valueOf(month);
-                        String yearString = String.valueOf(year);
-
-                        ablaufDatumWatcherString = dayString + "." + monthString + "." + yearString;
-
-
-                        /* In die Datenbank einfuegen */
-                        dbHandler.insertFood(nameWatcher, countWatcher, ablaufDatumWatcherString);
-                        /* Aus der Datenbank lesen (Ausgabe Konsole)*/
+                        dbHandler.insertFood(nameWatcher, countWatcher, dateToString(simpleDatePicker));
                         dbHandler.getFoodFromDB();
-
-
-                        listAdapterClass.add(new DatabaseHelper(nameWatcher, ablaufDatumWatcherString, countWatcher));
+                        listAdapterClass.add(new DatabaseHelper(nameWatcher, dateToString(simpleDatePicker), countWatcher));
                         listAdapterClass.notifyDataSetChanged();
                         dbHandler.close();
                         builder.dismiss();
@@ -217,9 +163,10 @@ public class Fragment_Fridge extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 System.out.println(":::::" + dbFood.get(i).getName());
-                // Geht noch nicht
-                //dbHandler.deleteItem(dbFood.get(i).getName());
+                dbHandler.deleteRow(dbFood.get(i).getName());
                 dbFood.remove(i);
+                dbHandler.getFoodFromDB();
+                dbHandler.close();
                 listAdapterClass.notifyDataSetChanged();
                 return false;
             }
@@ -233,44 +180,54 @@ public class Fragment_Fridge extends Fragment {
                 System.out.println("open dialog");
                 String nameOfClickedItem = dbFood.get(i).getName();
                 /*
-                * Fuers inkrementieren ne Methode in DatabaseHandler schreiben
-                * Liste aktullisieren nicht vergessen
-                * PopUp halbwegs schoen designen
-                */
+                 * Fuers inkrementieren ne Methode in DatabaseHandler schreiben
+                 * Liste aktullisieren nicht vergessen
+                 * PopUp halbwegs schoen designen
+                 */
             }
         });
 
         return list_overview;
+    }
+
+
+    private TextWatcher watcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
 
-
-        private TextWatcher watcher = new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String n = nameInput.getText().toString();
+            String c = countInput.getText().toString();
+            addLebensmittel.setEnabled(n.length() > 0 && c.length() > 0);
+            if (addLebensmittel.isEnabled()) {
+                addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(2, 212, 255)));
+                addLebensmittel.setAlpha(1f);
+            } else {
+                addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                addLebensmittel.setAlpha(0.33f);
             }
+        }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String n = nameInput.getText().toString();
-                String c = countInput.getText().toString();
-                addLebensmittel.setEnabled(n.length() > 0 && c.length() > 0);
-                if (addLebensmittel.isEnabled()) {
-                    addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(2, 212, 255)));
-                    addLebensmittel.setAlpha(1f);
-                } else {
-                    addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
-                    addLebensmittel.setAlpha(0.33f);
-                }
-            }
+        @Override
+        public void afterTextChanged(Editable editable) {
+            nameWatcher = nameInput.getText().toString();
+            countWatcher = countInput.getText().toString();
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                nameWatcher = nameInput.getText().toString();
-                countWatcher = countInput.getText().toString();
+        }
+    };
 
-            }
-        };
-
-
+    public String dateToString(DatePicker _date) {
+        int day = _date.getDayOfMonth();
+        int month = _date.getMonth() + 1;
+        int year = _date.getYear();
+        String dayString = String.valueOf(day);
+        String monthString = String.valueOf(month);
+        String yearString = String.valueOf(year);
+        return ablaufDatumWatcherString = dayString + "." + monthString + "." + yearString;
     }
+
+
+}
