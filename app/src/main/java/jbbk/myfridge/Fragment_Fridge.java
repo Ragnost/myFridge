@@ -20,12 +20,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
@@ -178,12 +180,48 @@ public class Fragment_Fridge extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 System.out.println("open dialog");
-                String nameOfClickedItem = dbFood.get(i).getName();
+                final String nameOfClickedItem = dbFood.get(i).getName();
+                final String count = dbFood.get(i).getStueckzahl();
+
+                PopupMenu popupMenu = new PopupMenu(mContext, myListView);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu_plusminus, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        String itemTitle = item.getTitle().toString();
+                        switch (itemTitle) {
+                            //increase
+                            case "Hinzufügen":
+
+
+                                dbHandler.changeStueckzahl(nameOfClickedItem, count, 1);
+                                dbHandler.getFoodFromDB();
+                                dbHandler.close();
+                                listAdapterClass.notifyDataSetChanged();
+                                break;
+                            //decrease
+                            case "Rausnehmen":
+
+                                dbHandler.changeStueckzahl(nameOfClickedItem, count, 0);
+                                dbHandler.getFoodFromDB();
+                                dbHandler.close();
+
+                                listAdapterClass.notifyDataSetChanged();
+                                break;
+                            default:
+                                System.out.print("Popup schließt sich");
+                        }
+                        return false;
+                    }
+                });
                 /*
                  * Fuers inkrementieren ne Methode in DatabaseHandler schreiben
                  * Liste aktullisieren nicht vergessen
                  * PopUp halbwegs schoen designen
                  */
+                popupMenu.show();
             }
         });
 

@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void deleteRow(String name) {
         mSqLiteDatabase = this.getWritableDatabase();
-        mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name +"\";" , null);
+        mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
         mSqLiteDatabase.close();
     }
 
@@ -74,6 +74,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COLUMN_ABLAUFDATUM, datum);
         System.out.println("Datenbank: " + mSqLiteDatabase.insert(TABLE_FOOD_LIST, null, values));
         mSqLiteDatabase.close();
+    }
+
+    //Todo: auf id prüfen.
+    public void changeStueckzahl(String name, String count, int i) {
+        mSqLiteDatabase = this.getWritableDatabase();
+
+        //decrease
+        if (i == 0) {
+            int countadjusted = Integer.parseInt(count) - 1;
+            Integer.toString(countadjusted);
+
+            if (Integer.parseInt(count) <= 0) {
+                // deleteRow(name);
+            }
+            if (Integer.parseInt(count) > 0) {
+                String updateStueckzahl = " UPDATE " + TABLE_FOOD_LIST + " SET " + COLUMN_STUECKZAHL + " = " + countadjusted + " WHERE " + COLUMN_NAME + " = " + "\'" + name + "\'";
+                try {
+                    Log.d(LOG_TAG, "Stueckzahl wird reduziert");
+                    mSqLiteDatabase.execSQL(updateStueckzahl);
+                } catch (Exception ex) {
+                    Log.e(LOG_TAG, "Fehler beim reduzieren der Stueckzahl " + ex.getMessage());
+                }
+
+            }
+        }
+        //increase
+        else if (i == 1) {
+            int countadjusted = Integer.parseInt(count) + 1;
+            Integer.toString(countadjusted);
+            String updateStueckzahl = " UPDATE " + TABLE_FOOD_LIST + " SET " + COLUMN_STUECKZAHL + " = " + countadjusted + " WHERE " + COLUMN_NAME + " = " + "\'" + name + "\'";
+            try {
+                Log.d(LOG_TAG, "Stueckzahl wird erhöht.");
+                mSqLiteDatabase.execSQL(updateStueckzahl);
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, "Fehler beim erhöhen der Stueckzahl " + ex.getMessage());
+            }
+        } else {
+            System.out.println("Falscher Parameter übergeben" + i);
+        }
+        mSqLiteDatabase.close();
+
     }
 
     public int getProfilesCount() {
