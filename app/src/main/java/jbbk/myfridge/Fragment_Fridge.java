@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -205,7 +206,7 @@ public class Fragment_Fridge extends Fragment {
                 final String count = dbFood.get(i).getStueckzahl();
                 final int toDelteinList = i;
 
-                PopupMenu popupMenu = new PopupMenu(mContext, myListView);
+                final PopupMenu popupMenu = new PopupMenu(mContext, myListView, Gravity.RIGHT);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu_plusminus, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -250,6 +251,7 @@ public class Fragment_Fridge extends Fragment {
                                 break;
                             default:
                                 System.out.print("Popup schließt sich");
+                                popupMenu.dismiss();
                                 break;
                         }
                         return false;

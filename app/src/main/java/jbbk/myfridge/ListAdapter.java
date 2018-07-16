@@ -86,11 +86,13 @@ public class ListAdapter extends ArrayAdapter<DatabaseHelper> {
 
 
         String fileName = replaceUmlaute(model.getName().toLowerCase());
-        if (listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()) != 0) {
+       try{ if (listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()) != 0) {
             iconView.setImageResource(listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()));
         } else {
             iconView.setImageResource(listView.getResources().getIdentifier("unbekannt", "mipmap", this.getContext().getPackageName()));
-        }
+        }}catch (Exception e){
+           iconView.setImageResource(listView.getResources().getIdentifier("unbekannt", "mipmap", this.getContext().getPackageName()));
+       }
         return listView;
     }
 

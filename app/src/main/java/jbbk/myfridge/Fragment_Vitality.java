@@ -1,13 +1,19 @@
 package jbbk.myfridge;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Random;
 
 /**
  * Letztes Fragment Element des Tab Layouts zeigt einem wie gesund man sich ernährt
@@ -17,7 +23,12 @@ public class Fragment_Vitality extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    String randomSprueche[] = {
+            "Morgens das Frühstück nicht vergessen",
+            "3 Bier sind auch eine Mahlzeit",
+            "Wann hast du zuletzt den Kühlschrank geputzt?",
+            "Von Salat schrumpft der Bizeps"};
+    private Random rnd;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -25,6 +36,7 @@ public class Fragment_Vitality extends Fragment {
     private Context mContext;
     private TextView vitalyTextView;
     private View overview;
+    private TextView randomSpruch;
 
 
     public Fragment_Vitality() {
@@ -50,7 +62,7 @@ public class Fragment_Vitality extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mContext = getActivity().getApplicationContext();
-
+        rnd = new Random();
 
         dbHandler = new DatabaseHandler(mContext);
         dbHandler.getFoodFromDB();
@@ -62,7 +74,7 @@ public class Fragment_Vitality extends Fragment {
         overview = inflater.inflate(R.layout.fragment_vitality, container, false);
         dbHandler.getFoodFromDB();
         vitalyTextView = overview.findViewById(R.id.vitalyID);
-
+        randomSpruch = overview.findViewById(R.id.randomText);
         ImageView iconView = overview.findViewById(R.id.vitaltyImage);
 
         float calcVitaly = 0;
@@ -93,7 +105,35 @@ public class Fragment_Vitality extends Fragment {
             iconView.setImageResource(imgBadJob);
         }
 
+        iconView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    int randomValue = getRandomNumberInRange(0, randomSprueche.length - 1);
+                    randomSpruch.setText(randomSprueche[randomValue]);
+                    randomSpruch.setBackgroundColor(Color.rgb(97, 131, 196));
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    randomSpruch.setText("");
+                    randomSpruch.setBackgroundColor(Color.WHITE);
+                }
+
+                return true;
+            }
+        });
+
         return overview;
+    }
+
+    private static int getRandomNumberInRange(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max muss groesser als min sein");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 
 
