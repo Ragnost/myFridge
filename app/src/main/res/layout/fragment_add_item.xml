@@ -7,8 +7,8 @@
     android:id="@+id/fragment_add_item_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_AddItem"
-    android:layout_centerHorizontal="true">
+    android:layout_centerHorizontal="true"
+    tools:context=".Fragment_AddItem">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -17,13 +17,14 @@
         android:id="@+id/myImageView"
         android:layout_width="match_parent"
         android:layout_height="51dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:src="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/myImageViewText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
@@ -36,8 +37,8 @@
         android:id="@+id/myImageViewText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentTop="true"
+        android:layout_below="@id/myImageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         android:backgroundTint="@color/colorAccent"
@@ -45,16 +46,18 @@
         android:textColor="#fff" />
 
     <EditText
+
         android:id="@+id/addNameID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_below="@id/myImageViewText2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="82dp"
-        android:maxLength="10"
         android:ems="10"
         android:hint="Name"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:maxLength="10" />
 
 
     <EditText
@@ -64,22 +67,67 @@
         android:layout_below="@+id/addNameID"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:maxLength="10"
         android:hint="Stückzahl"
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:maxLength="10" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:paddingTop="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/addCountLebensmittel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Ablaufdatum" />
 
     <DatePicker
         android:id="@+id/simpleDatePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/addLebensmittel"
+        android:layout_below="@id/textView2"
         android:layout_centerHorizontal="true"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
         android:orientation="horizontal"
         android:scrollbarStyle="outsideOverlay" />
 
+    <TextView
+        android:id="@+id/seekText"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/simpleDatePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Bewertung" />
+
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="79dp"
+        android:max="10" />
+
+    <TextView
+        android:id="@+id/seekText0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/seekBar1"
+        android:layout_marginStart="27dp"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/seekText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/seekBar1"
+        android:layout_marginEnd="19dp"
+        android:text="10" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addLebensmittel"
@@ -88,23 +136,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="67dp"
+        android:layout_marginBottom="22dp"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/white"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_anchorGravity="bottom|right|end"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints,UnknownId" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/simpleDatePicker"
-        android:layout_centerHorizontal="true"
-        android:text="Ablaufdatum" />
 
 
 </RelativeLayout>

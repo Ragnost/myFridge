@@ -1,12 +1,13 @@
 package jbbk.myfridge;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class Fragment_Vitality extends Fragment {
@@ -18,20 +19,17 @@ public class Fragment_Vitality extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private DatabaseHandler dbHandler;
+    private Context mContext;
+    private TextView vitalyTextView;
+    private View overview;
 
 
     public Fragment_Vitality() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Vitality.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static Fragment_Vitality newInstance(String param1, String param2) {
         Fragment_Vitality fragment = new Fragment_Vitality();
@@ -49,13 +47,51 @@ public class Fragment_Vitality extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mContext = getActivity().getApplicationContext();
+
+
+        dbHandler = new DatabaseHandler(mContext);
+        dbHandler.getFoodFromDB();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vitality, container, false);
+        overview = inflater.inflate(R.layout.fragment_vitality, container, false);
+        dbHandler.getFoodFromDB();
+        vitalyTextView = overview.findViewById(R.id.vitalyID);
+
+        ImageView iconView = overview.findViewById(R.id.vitaltyImage);
+
+        float calcVitaly = 0;
+
+        int allCount = 0;
+        int count = dbHandler.getProfilesCount();
+        for (int i = 0; i < count; i++) {
+            calcVitaly = calcVitaly + (dbHandler.getVitaly().get(i)*Integer.parseInt(dbHandler.getStueckzahl().get(i)));
+            allCount = allCount + Integer.parseInt(dbHandler.getStueckzahl().get(i));
+        }
+        calcVitaly = calcVitaly / allCount;
+        Integer imgGoodJob = overview.getResources().getIdentifier("good_job", "mipmap", this.getContext().getPackageName());
+        Integer imgBadJob = overview.getResources().getIdentifier("bad_job", "mipmap", this.getContext().getPackageName());
+        Integer imgNeutralJob = overview.getResources().getIdentifier("neutral_job", "mipmap", this.getContext().getPackageName());
+
+
+        System.out.println("Das Essverhalten ist: " + calcVitaly);
+
+        int value = (int) calcVitaly;
+
+        if(value > 6){
+            iconView.setImageResource(imgGoodJob);
+        }
+        if(value <= 6 && calcVitaly > 4){
+            iconView.setImageResource(imgNeutralJob);
+        }
+        if(value <= 4){
+            iconView.setImageResource(imgBadJob);
+        }
+
+        return overview;
     }
 
 

@@ -13,18 +13,28 @@ public class DatabaseHelper {
     public String name;
     public String ablaufdatum;
     public String stueckzahl;
+    public int vitaly;
     public Icon image;
 
     public DatabaseHelper() {
 
     }
 
-    public DatabaseHelper(String name, String ablaufdatum, String stueckzahl) {
+    public DatabaseHelper(String name, String ablaufdatum, String stueckzahl, Integer vitaly) {
         this.name = name;
         this.ablaufdatum = ablaufdatum;
         this.stueckzahl = stueckzahl;
+        this.vitaly = vitaly;
     }
 
+
+    public int getVitaly() {
+        return vitaly;
+    }
+
+    public void setVitaly(int vitaly) {
+        this.vitaly = vitaly;
+    }
 
     public String getName() {
         return name;

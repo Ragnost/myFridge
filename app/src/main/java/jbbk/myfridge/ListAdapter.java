@@ -71,11 +71,11 @@ public class ListAdapter extends ArrayAdapter<DatabaseHelper> {
             e.printStackTrace();
         }
         String countdown = String.valueOf(TimeUnit.DAYS.convert(unterschied, TimeUnit.MILLISECONDS));
-
+        int calcCountdownNew = Integer.parseInt(countdown) + 1;
+        countdown = String.valueOf(calcCountdownNew);
         String days = " Tage";
         if (countdown.equals("1") || countdown.equals(1)) {
             days = " Tag";
-
         }
         if (countdown.equals("0") || countdown.equals(0)) {
             countdownView.setText("ABGELAUFEN");
@@ -85,7 +85,6 @@ public class ListAdapter extends ArrayAdapter<DatabaseHelper> {
 
 
         String fileName = replaceUmlaute(model.getName().toLowerCase());
-
         if (listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()) != 0) {
             iconView.setImageResource(listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()));
         } else {

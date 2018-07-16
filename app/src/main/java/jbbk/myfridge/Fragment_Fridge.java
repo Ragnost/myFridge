@@ -1,5 +1,6 @@
 package jbbk.myfridge;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -30,6 +31,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,11 +50,12 @@ public class Fragment_Fridge extends Fragment {
     private FloatingActionButton addButton;
     private View list_overview;
     private Integer icons[];
+    private int vitalyValue = 0;
     private DatabaseHelper dbHelper = new DatabaseHelper();
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("dd.MM.yyyy");
     private ArrayList<DatabaseHelper> dbFood;
-
+    private SeekBar vitalyBar;
     private Context mContext;
     private FloatingActionButton addLebensmittel;
     private RelativeLayout mRelativeLayout;
@@ -86,10 +89,7 @@ public class Fragment_Fridge extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
-
         dbHandler = new DatabaseHandler(mContext);
-        //dbHandler.insertFood("Kartoffel", "1", "11.10.2018");
-        //dbHandler.clearDatabase();
         dbHandler.getFoodFromDB();
 
 
@@ -109,8 +109,9 @@ public class Fragment_Fridge extends Fragment {
         mRelativeLayout = list_overview.findViewById(R.id.test);
 
         dbFood = new ArrayList<>();
+        dbFood.clear();
         for (int i = 0; i < dbHandler.getProfilesCount(); i++) {
-            dbFood.add(new DatabaseHelper(dbHandler.getName().get(i), dbHandler.getAblaufdatum().get(i), dbHandler.getStueckzahl().get(i)));
+            dbFood.add(new DatabaseHelper(dbHandler.getName().get(i), dbHandler.getAblaufdatum().get(i), dbHandler.getStueckzahl().get(i), dbHandler.getVitaly().get(i)));
         }
 
 
@@ -132,17 +133,40 @@ public class Fragment_Fridge extends Fragment {
                 nameInput = dialogView.findViewById(R.id.addNameID);
                 simpleDatePicker = dialogView.findViewById(R.id.simpleDatePicker);
                 countInput = dialogView.findViewById(R.id.addCountLebensmittel);
+                vitalyBar = dialogView.findViewById(R.id.seekBar1);
+
+                vitalyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        vitalyValue = seekBar.getProgress();
+                    }
+                });
+                System.out.println("bar: " + vitalyBar);
 
                 nameInput.addTextChangedListener(watcher);
                 countInput.addTextChangedListener(watcher);
 
+                addLebensmittel.setEnabled(false);
+                addLebensmittel.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                addLebensmittel.setAlpha(0.33f);
 
                 addLebensmittel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        dbHandler.insertFood(nameWatcher, countWatcher, dateToString(simpleDatePicker));
+                        System.out.println("Bewertung: " + vitalyValue);
+                        dbHandler.insertFood(nameWatcher, countWatcher, dateToString(simpleDatePicker), vitalyValue);
                         dbHandler.getFoodFromDB();
-                        listAdapterClass.add(new DatabaseHelper(nameWatcher, dateToString(simpleDatePicker), countWatcher));
+                        listAdapterClass.add(new DatabaseHelper(nameWatcher, dateToString(simpleDatePicker), countWatcher, vitalyValue));
                         listAdapterClass.notifyDataSetChanged();
                         dbHandler.close();
                         builder.dismiss();
@@ -168,21 +192,26 @@ public class Fragment_Fridge extends Fragment {
                 dbHandler.deleteRow(dbFood.get(i).getName());
                 dbFood.remove(i);
                 dbHandler.getFoodFromDB();
-                dbHandler.close();
                 listAdapterClass.notifyDataSetChanged();
                 return false;
             }
         });
 
 
+
         /** POPUP FUER INKREMENTIEREN HIER REIN **/
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 System.out.println("open dialog");
                 final String nameOfClickedItem = dbFood.get(i).getName();
+                final Integer vitalityofClickedItem = dbFood.get(i).getVitaly();
+                final String ablaufdatumOfClickedItem = dbFood.get(i).getAblaufdatum();
+                final String stueckzahlOfClickedItem = dbFood.get(i).getStueckzahl();
                 final String count = dbFood.get(i).getStueckzahl();
-
+                final int toDelteinList = i;
                 PopupMenu popupMenu = new PopupMenu(mContext, myListView);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu_plusminus, popupMenu.getMenu());
 
@@ -194,8 +223,12 @@ public class Fragment_Fridge extends Fragment {
                         switch (itemTitle) {
                             //increase
                             case "Hinzufügen":
+                               int tmp = Integer.parseInt(stueckzahlOfClickedItem);
+                               tmp++;
+                               String countOfClickedItem = String.valueOf(tmp);
 
-
+                                listAdapterClass.add(new DatabaseHelper(nameOfClickedItem, ablaufdatumOfClickedItem, countOfClickedItem, vitalityofClickedItem));
+                                dbFood.remove(toDelteinList);
                                 dbHandler.changeStueckzahl(nameOfClickedItem, count, 1);
                                 dbHandler.getFoodFromDB();
                                 dbHandler.close();
