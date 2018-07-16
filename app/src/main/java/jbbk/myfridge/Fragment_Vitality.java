@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+/**
+ * Letztes Fragment Element des Tab Layouts zeigt einem wie gesund man sich ernährt
+ **/
 public class Fragment_Vitality extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,7 +70,7 @@ public class Fragment_Vitality extends Fragment {
         int allCount = 0;
         int count = dbHandler.getProfilesCount();
         for (int i = 0; i < count; i++) {
-            calcVitaly = calcVitaly + (dbHandler.getVitaly().get(i)*Integer.parseInt(dbHandler.getStueckzahl().get(i)));
+            calcVitaly = calcVitaly + (dbHandler.getVitaly().get(i) * Integer.parseInt(dbHandler.getStueckzahl().get(i)));
             allCount = allCount + Integer.parseInt(dbHandler.getStueckzahl().get(i));
         }
         calcVitaly = calcVitaly / allCount;
@@ -81,13 +83,13 @@ public class Fragment_Vitality extends Fragment {
 
         int value = (int) calcVitaly;
 
-        if(value > 6){
+        if (value > 6) {
             iconView.setImageResource(imgGoodJob);
         }
-        if(value <= 6 && calcVitaly > 4){
+        if (value <= 6 && calcVitaly > 4) {
             iconView.setImageResource(imgNeutralJob);
         }
-        if(value <= 4){
+        if (value <= 4) {
             iconView.setImageResource(imgBadJob);
         }
 

@@ -1,23 +1,16 @@
 package jbbk.myfridge;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -29,17 +22,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
-
+/**
+ * Fragment_Fridge ist das erste Element des Tab Layouts und
+ * beinhaltet eine Liste mit allen Artikeln im Kühlschrank.
+ * Zusätzlich noch weitere grafische Objekte, welche Methoden zum Hinzufügen,
+ * Erweitern, Ändern der Liste hinterlegt haben.
+ **/
 public class Fragment_Fridge extends Fragment {
 
 
@@ -119,7 +113,6 @@ public class Fragment_Fridge extends Fragment {
         myListView = list_overview.findViewById(R.id.listoverview_id);
         myListView.setAdapter(listAdapterClass);
 
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -184,7 +177,7 @@ public class Fragment_Fridge extends Fragment {
             }
         });
 
-
+        /**Lange auf ein Element klicken um es zu löschen**/
         myListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -198,8 +191,7 @@ public class Fragment_Fridge extends Fragment {
         });
 
 
-
-        /** POPUP FUER INKREMENTIEREN HIER REIN **/
+        /** POPUP menu für das Inkrementieren und Dekrementieren der Stückzahl eines Eintrags. **/
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -212,6 +204,7 @@ public class Fragment_Fridge extends Fragment {
                 final String stueckzahlOfClickedItem = dbFood.get(i).getStueckzahl();
                 final String count = dbFood.get(i).getStueckzahl();
                 final int toDelteinList = i;
+
                 PopupMenu popupMenu = new PopupMenu(mContext, myListView);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu_plusminus, popupMenu.getMenu());
 
@@ -223,9 +216,9 @@ public class Fragment_Fridge extends Fragment {
                         switch (itemTitle) {
                             //increase
                             case "Hinzufügen":
-                               int tmp = Integer.parseInt(stueckzahlOfClickedItem);
-                               tmp++;
-                               String countOfClickedItem = String.valueOf(tmp);
+                                int tmp = Integer.parseInt(stueckzahlOfClickedItem);
+                                tmp++;
+                                String countOfClickedItem = String.valueOf(tmp);
 
                                 listAdapterClass.add(new DatabaseHelper(nameOfClickedItem, ablaufdatumOfClickedItem, countOfClickedItem, vitalityofClickedItem));
                                 dbFood.remove(toDelteinList);
@@ -234,26 +227,34 @@ public class Fragment_Fridge extends Fragment {
                                 dbHandler.close();
                                 listAdapterClass.notifyDataSetChanged();
                                 break;
+
                             //decrease
                             case "Rausnehmen":
+                                int tmpor = Integer.parseInt(stueckzahlOfClickedItem);
 
-                                dbHandler.changeStueckzahl(nameOfClickedItem, count, 0);
-                                dbHandler.getFoodFromDB();
-                                dbHandler.close();
+                                if ((tmpor--) > 1) {
 
+                                    String reducedcounter = String.valueOf(tmpor);
+
+                                    listAdapterClass.add(new DatabaseHelper(nameOfClickedItem, ablaufdatumOfClickedItem, reducedcounter, vitalityofClickedItem));
+                                    dbFood.remove(toDelteinList);
+                                    dbHandler.changeStueckzahl(nameOfClickedItem, count, 0);
+                                    dbHandler.getFoodFromDB();
+                                    dbHandler.close();
+                                } else {
+                                    dbHandler.deleteRow(dbFood.get(toDelteinList).getName());
+                                    dbFood.remove(toDelteinList);
+                                    dbHandler.getFoodFromDB();
+                                }
                                 listAdapterClass.notifyDataSetChanged();
                                 break;
                             default:
                                 System.out.print("Popup schließt sich");
+                                break;
                         }
                         return false;
                     }
                 });
-                /*
-                 * Fuers inkrementieren ne Methode in DatabaseHandler schreiben
-                 * Liste aktullisieren nicht vergessen
-                 * PopUp halbwegs schoen designen
-                 */
                 popupMenu.show();
             }
         });
@@ -290,6 +291,10 @@ public class Fragment_Fridge extends Fragment {
         }
     };
 
+    /**
+     * DateObjekt wird zu einem String gemacht.
+     * @return Ablaufdatum als String.
+     **/
     public String dateToString(DatePicker _date) {
         int day = _date.getDayOfMonth();
         int month = _date.getMonth() + 1;

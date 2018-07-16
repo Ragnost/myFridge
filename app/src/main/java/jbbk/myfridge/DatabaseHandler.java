@@ -9,7 +9,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-//shoppingmemodbhelper
+/**
+ * DatabaseHandler für die SQLite-Befehle zum Verwalten der Datenbank,
+ * welche von dem Fragment_Fridge für die List_View verwendet wird.
+ **/
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private ArrayList<Integer> vitaly = new ArrayList<>();
@@ -41,7 +44,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(LOG_TAG, "DataBaseHandler hat die Datenbank " + getDatabaseName() + " erzeugt.");
     }
 
-
+    /**
+     * Erstellen der Datenbank falls diese noch nicht vorhanden ist.
+     **/
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -60,12 +65,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Einen Eintrag mit allen Werten löschen
+     **/
     public void deleteRow(String name) {
         mSqLiteDatabase = this.getWritableDatabase();
         mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
         mSqLiteDatabase.close();
     }
 
+    /**
+     * Neuen Eintrag in die Datenbank einfügen.
+     **/
     public void insertFood(String name, String count, String datum, Integer vitaly) {
         System.out.println("Add to dataBase; " + name + " - " + count + " - " + datum);
         mSqLiteDatabase = this.getWritableDatabase();
@@ -78,7 +89,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         mSqLiteDatabase.close();
     }
 
-    //Todo: auf id prüfen.
+    /**
+     * Ändern der Stückzahl eines Eintrags.
+     **/
     public void changeStueckzahl(String name, String count, int i) {
         mSqLiteDatabase = this.getWritableDatabase();
 
@@ -87,9 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             int countadjusted = Integer.parseInt(count) - 1;
             Integer.toString(countadjusted);
 
-            if (Integer.parseInt(count) <= 0) {
-                // deleteRow(name);
-            }
+
             if (Integer.parseInt(count) > 0) {
                 String updateStueckzahl = " UPDATE " + TABLE_FOOD_LIST + " SET " + COLUMN_STUECKZAHL + " = " + countadjusted + " WHERE " + COLUMN_NAME + " = " + "\'" + name + "\'";
                 try {
@@ -119,6 +130,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Berechnet die Zahl der Elemente.
+     *
+     * @return gibt die Anzahl der Reihen der Datenbank wieder.
+     **/
     public int getProfilesCount() {
         String countQuery = "SELECT  * FROM " + TABLE_FOOD_LIST;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -128,7 +144,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
-
+    /**
+     * Die Datenbankeinträge werden geholt und in 4 seperaten Arraylisten abgelegt.
+     **/
     public void getFoodFromDB() {
         mSqLiteDatabase = this.getReadableDatabase();
         String selectAll = "select * from " + TABLE_FOOD_LIST;
@@ -161,6 +179,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         mSqLiteDatabase.close();
     }
 
+    /**
+     * Getter Methoden für die ArrayListen in denen die Datenbankeinträge zwischengespeichert werden.
+     **/
     public ArrayList<Integer> getVitaly() {
         return vitaly;
     }

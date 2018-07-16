@@ -2,19 +2,25 @@ package jbbk.myfridge;
 
 import android.graphics.drawable.Icon;
 
-import java.util.ArrayList;
 
-//shoppingmemo
+/**
+ * Helper Class zum einfachen zwischenspeichern eines Datenbankeintrags mit
+ * den Einträgen:
+ * -Name
+ * -Ablaufdatum
+ * -Stueckzahl
+ * -Vitality
+ **/
 public class DatabaseHelper {
 
     public String DATABASE_NAME;
 
 
-    public String name;
-    public String ablaufdatum;
-    public String stueckzahl;
-    public int vitaly;
-    public Icon image;
+    private String name;
+    private String ablaufdatum;
+    private String stueckzahl;
+    private int vitaly;
+    private Icon image;
 
     public DatabaseHelper() {
 
@@ -27,7 +33,9 @@ public class DatabaseHelper {
         this.vitaly = vitaly;
     }
 
-
+    /**
+     * Getter und Setter Methoden für die verschiednen Objekteigenschaften.
+     **/
     public int getVitaly() {
         return vitaly;
     }
@@ -73,7 +81,6 @@ public class DatabaseHelper {
         String output = name;
         return output;
     }
-
 
 
 }
