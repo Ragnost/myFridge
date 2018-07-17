@@ -67,7 +67,7 @@ public class ListAdapter extends ArrayAdapter<DatabaseHelper> {
         long unterschied = 0;
         try {
             unterschied = dateFormat.parse(model.getAblaufdatum()).getTime() - today.getTime();
-            unterschied = unterschied + 1;
+            //unterschied = unterschied;
         } catch (ParseException e) {
             e.printStackTrace();
         }

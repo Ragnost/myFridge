@@ -111,6 +111,7 @@ public class Fragment_Fridge extends Fragment {
 
 
         listAdapterClass = new ListAdapter(this.getActivity(), dbFood);
+
         myListView = list_overview.findViewById(R.id.listoverview_id);
         myListView.setAdapter(listAdapterClass);
 
@@ -189,6 +190,7 @@ public class Fragment_Fridge extends Fragment {
                 dbFood.remove(i);
                 dbHandler.getFoodFromDB();
                 dbHandler.getShoppingList();
+
                 listAdapterClass.notifyDataSetChanged();
                 return false;
             }

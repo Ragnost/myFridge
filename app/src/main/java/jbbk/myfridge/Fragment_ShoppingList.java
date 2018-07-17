@@ -86,7 +86,8 @@ public class Fragment_ShoppingList extends Fragment {
         }
 
         //dbDeletedFood.add("Tomate");
-        //dbDeletedFood.add("Kürbis");
+        dbDeletedFood.add("Käse");
+
 
 
         listAdapterShopping = new ListAdapterShopping(this.getActivity(), dbDeletedFood);
