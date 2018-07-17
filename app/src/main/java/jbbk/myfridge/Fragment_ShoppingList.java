@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -27,7 +28,8 @@ public class Fragment_ShoppingList extends Fragment {
     private String mParam2;
     private ListView myListView;
     private RelativeLayout mRelativeLayout;
-    private ArrayList<DatabaseHelper> dbDeletedFood;
+    private ArrayList<String> dbDeletedFood;
+
     public Fragment_ShoppingList() {
         // Required empty public constructor
     }
@@ -67,18 +69,48 @@ public class Fragment_ShoppingList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         overview = inflater.inflate(R.layout.einkaufslist_overview, container, false);
-        mRelativeLayout = overview.findViewById(R.id.test);
+        mRelativeLayout = overview.findViewById(R.id.Fragment_ShoppingListID);
+
+
         dbDeletedFood = new ArrayList<>();
         dbDeletedFood.clear();
-        // TODO groesse holen; Konstruktor in DataBaseHelper schreiben; ArrayList in den DataBaseHandler hinzufuegen
-        for (int i = 0; i < 0; i++) {
-            //dbDeletedFood.add();
+
+
+        dbHandler.getShoppingList();
+        //System.out.println("Size: " + dbHandler.getNameShoppinglistElements().size());
+
+        for (int i = 0; i < dbHandler.getNumberofShoppingElements(); i++) {
+            System.out.println("[" + i + "] " + dbHandler.getNameShoppinglistElements().get(i));
+            dbDeletedFood.add(dbHandler.getNameShoppinglistElements().get(i));
+
         }
 
-        //TODO Adapterklasse schreiben
+        //dbDeletedFood.add("Tomate");
+        //dbDeletedFood.add("Kürbis");
+
+
         listAdapterShopping = new ListAdapterShopping(this.getActivity(), dbDeletedFood);
         myListView = overview.findViewById(R.id.einkaufswagen_overview);
         myListView.setAdapter(listAdapterShopping);
+
+        listAdapterShopping.notifyDataSetChanged();
+        dbHandler.getShoppingList();
+
+
+        myListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println(":::::" + dbDeletedFood.get(i));
+                dbHandler.deleteRow(dbDeletedFood.get(i));
+                dbHandler.deleteShoppingName(dbDeletedFood.get(i));
+                dbDeletedFood.remove(i);
+                dbHandler.getFoodFromDB();
+                listAdapterShopping.notifyDataSetChanged();
+                dbHandler.close();
+                return false;
+            }
+        });
+
 
         return overview;
     }

@@ -188,6 +188,7 @@ public class Fragment_Fridge extends Fragment {
                 dbHandler.deleteRow(dbFood.get(i).getName());
                 dbFood.remove(i);
                 dbHandler.getFoodFromDB();
+                dbHandler.getShoppingList();
                 listAdapterClass.notifyDataSetChanged();
                 return false;
             }

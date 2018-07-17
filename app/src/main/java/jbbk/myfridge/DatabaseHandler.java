@@ -36,8 +36,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public final String TABLE_NAME_LIST = "name_list";
     public final String SQL_CREATE_NAME_TABLE =
-            "CREATE TABLE" + TABLE_NAME_LIST +
-                    "(" + COLUMN_NAME + "TEXT NOT NULL);";
+            "CREATE TABLE " + TABLE_NAME_LIST +
+                    "(" + COLUMN_NAME + " TEXT NOT NULL);";
 
     private static final String LOG_TAG = DatabaseHandler.class.getSimpleName();
     private DatabaseHelper dbHelper = new DatabaseHelper();
@@ -45,7 +45,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private ArrayList<String> name = new ArrayList<>();
     private ArrayList<String> stueckzahl = new ArrayList<>();
     private ArrayList<String> ablaufdatum = new ArrayList<>();
-
     private ArrayList<String> nameShoppinglistElements = new ArrayList<>();
 
 
@@ -85,13 +84,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Einen Eintrag mit allen Werten in der Tabelle food_list löschen
      **/
     public void deleteRow(String name) {
+        addShoppingElement(name);
         mSqLiteDatabase = this.getWritableDatabase();
         mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
-<<<<<<< HEAD
-        //TODO Neue Tabelle den Eintrag hinzufuegen der gerade geloescht worden ist
-=======
-        addShoppingElement(name);
->>>>>>> ecdc81520bc241d844e934ccba0dc5b30ca690b0
         mSqLiteDatabase.close();
     }
 
@@ -211,6 +206,55 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // TODO ArrayList mit geloeschten Objekten
 
+    public void deleteShoppingName(String name) {
+        mSqLiteDatabase = this.getWritableDatabase();
+        mSqLiteDatabase.delete(TABLE_NAME_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
+        mSqLiteDatabase.close();
+    }
+
+
+    public void addShoppingElement(String name) {
+        mSqLiteDatabase = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put(COLUMN_NAME, name);
+        mSqLiteDatabase.insert(TABLE_NAME_LIST, null, value);
+        mSqLiteDatabase.close();
+    }
+
+    public void getShoppingList(){
+        mSqLiteDatabase = this.getReadableDatabase();
+        String selectAll = "select * from " + TABLE_NAME_LIST;
+        Cursor c = mSqLiteDatabase.rawQuery(selectAll, null);
+        nameShoppinglistElements.clear();
+        if (c.moveToFirst()) {
+            do {
+                /* To Object */
+                dbHelper.setDeltedName(c.getString(0));
+                System.out.println("#####DELETED NAME######");
+                System.out.println("----> " + c.getString(0));
+                nameShoppinglistElements.add(c.getString(0));
+
+            } while (c.moveToNext());
+        }
+        mSqLiteDatabase.close();
+    }
+
+
+    public int getNumberofShoppingElements(){
+        String countQuery = "SELECT  * FROM " + TABLE_NAME_LIST;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+    public ArrayList<String> getNameShoppinglistElements() {
+        return nameShoppinglistElements;
+    }
+
+
     public ArrayList<Integer> getVitaly() {
         return vitaly;
     }
@@ -227,35 +271,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return name;
     }
 
-    public void deleteShoppingName(String name) {
-        mSqLiteDatabase = this.getWritableDatabase();
-        mSqLiteDatabase.delete(TABLE_NAME_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
-        mSqLiteDatabase.close();
-    }
-
-
-    public void addShoppingElement(String name) {
-        mSqLiteDatabase = this.getWritableDatabase();
-        ContentValues value = new ContentValues();
-        value.put(COLUMN_NAME, name);
-        mSqLiteDatabase.insert(TABLE_NAME_LIST, null, value);
-        mSqLiteDatabase.close();
-
-    }
-
-    public int getNumberofShoppingElements(){
-        String countQuery = "SELECT  * FROM " + TABLE_NAME_LIST;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        int count = cursor.getCount();
-        cursor.close();
-        db.close();
-
-        return count;
-    }
-    public ArrayList<String> getNameShoppinglistElements() {
-        return name;
-    }
 }
 
 

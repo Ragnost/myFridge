@@ -14,14 +14,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-public class ListAdapterShopping extends ArrayAdapter<DatabaseHelper> {
+public class ListAdapterShopping extends ArrayAdapter<String> {
 
     private Activity context;
     private View listView;
+    private ArrayList<String> list;
 
-    public ListAdapterShopping(Activity context, ArrayList<DatabaseHelper> obj) {
+    public ListAdapterShopping(Activity context, ArrayList<String> obj) {
         super(context, R.layout.einkaufslist_item, obj);
         this.context = context;
+        this.list = obj;
     }
 
 
@@ -29,16 +31,16 @@ public class ListAdapterShopping extends ArrayAdapter<DatabaseHelper> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        listView = inflater.inflate(R.layout.list_item, null, true);
-        DatabaseHelper model = getItem(position);
+        listView = inflater.inflate(R.layout.einkaufslist_item, null, true);
+
 
         TextView name = listView.findViewById(R.id.einkaufswagen_text);
         ImageView iconView = listView.findViewById(R.id.einkaufswagen_image);
 
 
-        name.setText(model.getName());
+        name.setText(list.get(position));
 
-        String fileName = replaceUmlaute(model.getName().toLowerCase());
+        String fileName = replaceUmlaute(list.get(position).toLowerCase());
         try {
             if (listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()) != 0) {
                 iconView.setImageResource(listView.getResources().getIdentifier(fileName, "mipmap", this.getContext().getPackageName()));

@@ -81,6 +81,16 @@ public class DatabaseHelper {
         this.image = image;
     }
 
+
+    public String getDeltedName() {
+        return deltedName;
+    }
+
+    public void setDeltedName(String deltedName) {
+        this.deltedName = deltedName;
+    }
+
+
     @Override
     public String toString() {
         String output = name;
