@@ -75,6 +75,9 @@ public class Fragment_Fridge extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+
+
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -185,12 +188,13 @@ public class Fragment_Fridge extends Fragment {
         myListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println(":::::" + dbFood.get(i).getName());
+                System.out.println("item " + dbFood.get(i).getName() + " wurde geloescht");
+                dbHandler.getNameShoppinglistElements().add(dbFood.get(i).getName());
+                updateFragment();
                 dbHandler.deleteRow(dbFood.get(i).getName());
                 dbFood.remove(i);
                 dbHandler.getFoodFromDB();
                 dbHandler.getShoppingList();
-
                 listAdapterClass.notifyDataSetChanged();
                 return false;
             }
@@ -320,6 +324,10 @@ public class Fragment_Fridge extends Fragment {
         } catch (NumberFormatException e) {
             return 1;
         }
+    }
+
+    public void updateFragment(){
+
     }
 
 }

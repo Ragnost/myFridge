@@ -3,7 +3,9 @@ package jbbk.myfridge;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +60,19 @@ public class Fragment_ShoppingList extends Fragment {
 
         mContext = getActivity().getApplicationContext();
         dbHandler = new DatabaseHandler(mContext);
-
+        dbDeletedFood = new ArrayList<>();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+
+
+    }
+
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+
         }
     }
 
@@ -71,32 +82,46 @@ public class Fragment_ShoppingList extends Fragment {
         overview = inflater.inflate(R.layout.einkaufslist_overview, container, false);
         mRelativeLayout = overview.findViewById(R.id.Fragment_ShoppingListID);
 
-
-        dbDeletedFood = new ArrayList<>();
-        dbDeletedFood.clear();
-
+        System.out.println("HIER BIN ICH");
 
         dbHandler.getShoppingList();
-        //System.out.println("Size: " + dbHandler.getNameShoppinglistElements().size());
+
+
+        final SwipeRefreshLayout srL = overview.findViewById(R.id.swipe);
+        srL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                dbHandler.getShoppingList();
+                dbDeletedFood.clear();
+                for (int i = 0; i < dbHandler.getNumberofShoppingElements(); i++) {
+                    System.out.println("[" + i + "] " + dbHandler.getNameShoppinglistElements().get(i));
+                    //dbDeletedFood.add(dbHandler.getNameShoppinglistElements().get(i));
+                    listAdapterShopping.add(dbHandler.getNameShoppinglistElements().get(i));
+                }
+
+                listAdapterShopping.notifyDataSetChanged();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        srL.setRefreshing(false);
+                    }
+                }, 4000);
+            }
+        });
 
         for (int i = 0; i < dbHandler.getNumberofShoppingElements(); i++) {
             System.out.println("[" + i + "] " + dbHandler.getNameShoppinglistElements().get(i));
             dbDeletedFood.add(dbHandler.getNameShoppinglistElements().get(i));
-
         }
 
         //dbDeletedFood.add("Tomate");
-        dbDeletedFood.add("Käse");
-
-
+        //dbDeletedFood.add("Käse");
 
         listAdapterShopping = new ListAdapterShopping(this.getActivity(), dbDeletedFood);
         myListView = overview.findViewById(R.id.einkaufswagen_overview);
         myListView.setAdapter(listAdapterShopping);
-
-        listAdapterShopping.notifyDataSetChanged();
         dbHandler.getShoppingList();
-
+        listAdapterShopping.notifyDataSetChanged();
 
         myListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
