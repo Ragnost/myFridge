@@ -34,12 +34,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     COLUMN_STUECKZAHL + " TEXT NOT NULL, " +
                     COLUMN_VITALY + " INTEGER );";
 
+    public final String TABLE_NAME_LIST = "name_list";
+    public final String SQL_CREATE_NAME_TABLE =
+            "CREATE TABLE" + TABLE_NAME_LIST +
+                    "(" + COLUMN_NAME + "TEXT NOT NULL);";
+
     private static final String LOG_TAG = DatabaseHandler.class.getSimpleName();
     private DatabaseHelper dbHelper = new DatabaseHelper();
     private SQLiteDatabase mSqLiteDatabase;
     private ArrayList<String> name = new ArrayList<>();
     private ArrayList<String> stueckzahl = new ArrayList<>();
     private ArrayList<String> ablaufdatum = new ArrayList<>();
+
+    private ArrayList<String> nameShoppinglistElements = new ArrayList<>();
 
 
     public DatabaseHandler(Context context) {
@@ -57,7 +64,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d(LOG_TAG, "Die Tabelle wird mit dem Befehl:" + SQL_CREATE_FOOD_TABLE + " angelegt.");
             db.execSQL(SQL_CREATE_FOOD_TABLE);
         } catch (Exception ex) {
-            Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + ex.getMessage());
+            Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle food_list: " + ex.getMessage());
+        }
+        try {
+            Log.d(LOG_TAG, "Die zweite Tabelle wird mit dem Befehl:" + SQL_CREATE_NAME_TABLE + "angelegt.");
+            db.execSQL(SQL_CREATE_NAME_TABLE);
+        } catch (Exception ex) {
+            Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle name_list: " + ex.getMessage());
         }
     }
 
@@ -69,17 +82,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Einen Eintrag mit allen Werten löschen
+     * Einen Eintrag mit allen Werten in der Tabelle food_list löschen
      **/
     public void deleteRow(String name) {
         mSqLiteDatabase = this.getWritableDatabase();
         mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
+<<<<<<< HEAD
         //TODO Neue Tabelle den Eintrag hinzufuegen der gerade geloescht worden ist
+=======
+        addShoppingElement(name);
+>>>>>>> ecdc81520bc241d844e934ccba0dc5b30ca690b0
         mSqLiteDatabase.close();
     }
 
     /**
-     * Neuen Eintrag in die Datenbank einfügen.
+     * Neuen Eintrag in die Tabelle food_list einfügen.
      **/
     public void insertFood(String name, String count, String datum, Integer vitaly) {
         System.out.println("Add to dataBase; " + name + " - " + count + " - " + datum);
@@ -94,7 +111,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Ändern der Stückzahl eines Eintrags.
+     * Ändern der Stückzahl eines Eintrags der Tabelle food_list.
      **/
     public void changeStueckzahl(String name, String count, int i) {
         mSqLiteDatabase = this.getWritableDatabase();
@@ -135,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Berechnet die Zahl der Elemente.
+     * Berechnet die Zahl an Elemente der Tabelle food_list .
      *
      * @return gibt die Anzahl der Reihen der Datenbank wieder.
      **/
@@ -152,7 +169,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Die Datenbankeinträge werden geholt und in 4 seperaten Arraylisten abgelegt.
+     * Die Datenbankeinträge der Tabelle food_list werden geholt und in 4 seperaten Arraylisten abgelegt.
      **/
 
     //TODO getNameFromDB
@@ -189,7 +206,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Getter Methoden für die ArrayListen in denen die Datenbankeinträge zwischengespeichert werden.
+     * Getter Methoden für die ArrayListen in denen die Datenbankeinträge der Tabelle food_list zwischengespeichert werden.
      **/
 
     // TODO ArrayList mit geloeschten Objekten
@@ -210,7 +227,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return name;
     }
 
+    public void deleteShoppingName(String name) {
+        mSqLiteDatabase = this.getWritableDatabase();
+        mSqLiteDatabase.delete(TABLE_NAME_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
+        mSqLiteDatabase.close();
+    }
 
+
+    public void addShoppingElement(String name) {
+        mSqLiteDatabase = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put(COLUMN_NAME, name);
+        mSqLiteDatabase.insert(TABLE_NAME_LIST, null, value);
+        mSqLiteDatabase.close();
+
+    }
+
+    public int getNumberofShoppingElements(){
+        String countQuery = "SELECT  * FROM " + TABLE_NAME_LIST;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+    public ArrayList<String> getNameShoppinglistElements() {
+        return name;
+    }
 }
 
 
