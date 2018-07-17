@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent i = new Intent(MainActivity.this, Fragment_Fridge.class);
         Intent ii = new Intent(MainActivity.this, Fragment_Vitality.class);
+        Intent iii = new Intent(MainActivity.this, Fragment_ShoppingList.class);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three

@@ -158,6 +158,8 @@ public class Fragment_Fridge extends Fragment {
                     @Override
                     public void onClick(View view) {
                         System.out.println("Bewertung: " + vitalyValue);
+
+                        countWatcher = String.valueOf(checkMe(countWatcher));
                         dbHandler.insertFood(nameWatcher, countWatcher, dateToString(simpleDatePicker), vitalyValue);
                         dbHandler.getFoodFromDB();
                         listAdapterClass.add(new DatabaseHelper(nameWatcher, dateToString(simpleDatePicker), countWatcher, vitalyValue));
@@ -295,6 +297,7 @@ public class Fragment_Fridge extends Fragment {
 
     /**
      * DateObjekt wird zu einem String gemacht.
+     *
      * @return Ablaufdatum als String.
      **/
     public String dateToString(DatePicker _date) {
@@ -307,5 +310,13 @@ public class Fragment_Fridge extends Fragment {
         return ablaufDatumWatcherString = dayString + "." + monthString + "." + yearString;
     }
 
+    public static int checkMe(String s) {
+        try {
+            int tmp = Integer.parseInt(s);
+            return tmp;
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
 
 }

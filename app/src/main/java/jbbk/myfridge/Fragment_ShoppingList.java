@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 
 
 public class Fragment_ShoppingList extends Fragment {
@@ -14,12 +18,16 @@ public class Fragment_ShoppingList extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private View overview;
+    private ListAdapterShopping listAdapterShopping;
+    private Context mContext;
+    private DatabaseHandler dbHandler;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-
+    private ListView myListView;
+    private RelativeLayout mRelativeLayout;
+    private ArrayList<DatabaseHelper> dbDeletedFood;
     public Fragment_ShoppingList() {
         // Required empty public constructor
     }
@@ -45,6 +53,10 @@ public class Fragment_ShoppingList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = getActivity().getApplicationContext();
+        dbHandler = new DatabaseHandler(mContext);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -54,8 +66,21 @@ public class Fragment_ShoppingList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shoppinglist, container, false);
+        overview = inflater.inflate(R.layout.einkaufslist_overview, container, false);
+        mRelativeLayout = overview.findViewById(R.id.test);
+        dbDeletedFood = new ArrayList<>();
+        dbDeletedFood.clear();
+        // TODO groesse holen; Konstruktor in DataBaseHelper schreiben; ArrayList in den DataBaseHandler hinzufuegen
+        for (int i = 0; i < 0; i++) {
+            //dbDeletedFood.add();
+        }
+
+        //TODO Adapterklasse schreiben
+        listAdapterShopping = new ListAdapterShopping(this.getActivity(), dbDeletedFood);
+        myListView = overview.findViewById(R.id.einkaufswagen_overview);
+        myListView.setAdapter(listAdapterShopping);
+
+        return overview;
     }
 
 }

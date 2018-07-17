@@ -15,6 +15,9 @@ import java.util.ArrayList;
  **/
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+
+    //TODO Tabelle mit Namen erstellen - fertig
+
     private ArrayList<Integer> vitaly = new ArrayList<>();
     public static final String DATABASE_NAME = "myFridge.db";  // Database Name
     public static final int DATABASE_VERSION = 4;
@@ -71,6 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteRow(String name) {
         mSqLiteDatabase = this.getWritableDatabase();
         mSqLiteDatabase.delete(TABLE_FOOD_LIST, COLUMN_NAME + "=" + "\"" + name + "\";", null);
+        //TODO Neue Tabelle den Eintrag hinzufuegen der gerade geloescht worden ist
         mSqLiteDatabase.close();
     }
 
@@ -135,6 +139,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      * @return gibt die Anzahl der Reihen der Datenbank wieder.
      **/
+
+    //TODO Counter fuer die andere Tabelle
+
     public int getProfilesCount() {
         String countQuery = "SELECT  * FROM " + TABLE_FOOD_LIST;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -147,6 +154,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Die Datenbankeinträge werden geholt und in 4 seperaten Arraylisten abgelegt.
      **/
+
+    //TODO getNameFromDB
     public void getFoodFromDB() {
         mSqLiteDatabase = this.getReadableDatabase();
         String selectAll = "select * from " + TABLE_FOOD_LIST;
@@ -182,6 +191,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Getter Methoden für die ArrayListen in denen die Datenbankeinträge zwischengespeichert werden.
      **/
+
+    // TODO ArrayList mit geloeschten Objekten
+
     public ArrayList<Integer> getVitaly() {
         return vitaly;
     }

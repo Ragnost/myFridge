@@ -102,8 +102,7 @@ public class Fragment_Vitality extends Fragment {
             iconView.setImageResource(imgNeutralJob);
         }
         if (value <= 4) {
-            iconView.setImageResource(imgBadJob);
-        }
+            iconView.setImageResource(imgBadJob);}
 
         iconView.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ResourceType")

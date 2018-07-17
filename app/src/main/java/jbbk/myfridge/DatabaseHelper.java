@@ -21,9 +21,14 @@ public class DatabaseHelper {
     private String stueckzahl;
     private int vitaly;
     private Icon image;
+    private String deltedName;
 
     public DatabaseHelper() {
 
+    }
+
+    public DatabaseHelper(String name){
+        this.deltedName = name;
     }
 
     public DatabaseHelper(String name, String ablaufdatum, String stueckzahl, Integer vitaly) {
