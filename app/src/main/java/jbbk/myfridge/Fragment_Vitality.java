@@ -19,7 +19,6 @@ import java.util.Random;
  * Letztes Fragment Element des Tab Layouts zeigt einem wie gesund man sich ernährt
  **/
 public class Fragment_Vitality extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -29,7 +28,6 @@ public class Fragment_Vitality extends Fragment {
             "Wann hast du zuletzt den Kühlschrank geputzt?",
             "Von Salat schrumpft der Bizeps"};
     private Random rnd;
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private DatabaseHandler dbHandler;
@@ -44,7 +42,6 @@ public class Fragment_Vitality extends Fragment {
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static Fragment_Vitality newInstance(String param1, String param2) {
         Fragment_Vitality fragment = new Fragment_Vitality();
         Bundle args = new Bundle();
